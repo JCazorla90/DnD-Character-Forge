@@ -19,7 +19,7 @@
 
 *Crea personajes épicos, gestiona fichas interactivas, genera encuentros caóticos*
 
-[🎲 Demo en Vivo](https://jcazorla90.github.io/DnD-Character-Forge) | [📖 Documentación](./docs) | [🐛 Reportar Bug](https://github.com/JCazorla90/DnD-Character-Forge/issues) | [💬 Discord](https://discord.gg/yourserver)
+[🎲 Demo en Vivo](https://jcazorla90.github.io/DnD-Character-Forge) | [📖 Documentación](./docs) | [🐛 Reportar Bug](https://github.com/JCazorla90/DnD-Character-Forge/issues) | [💬 Discord](https://discord.gg/4jnSdyNfcV)
 
 ![Version](https://img.shields.io/badge/version-1.0.0-gold?style=for-the-badge)
 ![License](https://img.shields.io/badge/license-MIT-darkred?style=for-the-badge)
