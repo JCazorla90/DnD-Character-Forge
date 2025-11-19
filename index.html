@@ -14,8 +14,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     
-    <!-- Styles - CORREGIDO: Ruta absoluta desde root -->
-    <link rel="stylesheet" href="/DnD-Character-Forge/css/main.css">
+    <!-- Styles -->
+    <link rel="stylesheet" href="./css/main.css">
     
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐉</text></svg>">
@@ -75,9 +75,9 @@
             </p>
             
             <div class="hero-buttons">
-                <button class="btn btn--primary btn--large" onclick="navigateTo('wizard')">
+                <a href="./wizard.html" class="btn btn--primary btn--large">
                     🎲 Crear Personaje
-                </button>
+                </a>
                 <button class="btn btn--secondary btn--large" onclick="generateRandom()">
                     ⚡ Aleatorio
                 </button>
@@ -120,7 +120,7 @@
             </h2>
             
             <div class="features-grid">
-                <!-- Feature 1: Triple Mode Generator -->
+                <!-- Feature 1 -->
                 <div class="feature-card">
                     <div class="feature-icon">🎨</div>
                     <h3 class="feature-title">Generador Triple Modo</h3>
@@ -129,12 +129,10 @@
                         <li>🎲 <strong>Aleatorio:</strong> Personaje balanceado en 3 segundos</li>
                         <li>🌀 <strong>Chaos:</strong> Mago con 18 FUE y 6 INT (¡Locura total!)</li>
                     </ul>
-                    <button class="btn btn--outline" onclick="navigateTo('wizard')">
-                        Probar ahora →
-                    </button>
+                    <a href="./wizard.html" class="btn btn--outline">Probar ahora →</a>
                 </div>
                 
-                <!-- Feature 2: Interactive Sheet -->
+                <!-- Feature 2 -->
                 <div class="feature-card">
                     <div class="feature-icon">📋</div>
                     <h3 class="feature-title">Ficha Interactiva</h3>
@@ -144,12 +142,10 @@
                         <li>💾 Autosave en LocalStorage</li>
                         <li>📊 Tracking de HP, spell slots, usos</li>
                     </ul>
-                    <button class="btn btn--outline" onclick="showDemo()">
-                        Ver demo →
-                    </button>
+                    <button class="btn btn--outline" onclick="showDemo()">Ver demo →</button>
                 </div>
                 
-                <!-- Feature 3: Bestiary -->
+                <!-- Feature 3 -->
                 <div class="feature-card">
                     <div class="feature-icon">🐉</div>
                     <h3 class="feature-title">Bestiario y Encuentros</h3>
@@ -159,12 +155,10 @@
                         <li>🔍 Filtros por tipo, CR, ambiente</li>
                         <li>🌀 CHAOS: Goblins con Bola de Fuego</li>
                     </ul>
-                    <button class="btn btn--outline" onclick="navigateTo('bestiary')">
-                        Explorar →
-                    </button>
+                    <button class="btn btn--outline" onclick="alert('🐉 Bestiario próximamente')">Explorar →</button>
                 </div>
                 
-                <!-- Feature 4: Export & Sync -->
+                <!-- Feature 4 -->
                 <div class="feature-card">
                     <div class="feature-icon">📤</div>
                     <h3 class="feature-title">Exportar y Sincronizar</h3>
@@ -174,12 +168,10 @@
                         <li>🖼️ Mint NFT (Web3 compatible)</li>
                         <li>💾 Backup JSON completo</li>
                     </ul>
-                    <button class="btn btn--outline" onclick="showExportOptions()">
-                        Ver opciones →
-                    </button>
+                    <button class="btn btn--outline" onclick="showExportOptions()">Ver opciones →</button>
                 </div>
                 
-                <!-- Feature 5: APIs -->
+                <!-- Feature 5 -->
                 <div class="feature-card">
                     <div class="feature-icon">🌐</div>
                     <h3 class="feature-title">APIs Integradas</h3>
@@ -189,12 +181,10 @@
                         <li>🎨 Lexica.art (retratos IA fantasy)</li>
                         <li>⚡ Cache inteligente para performance</li>
                     </ul>
-                    <button class="btn btn--outline" onclick="showAPIInfo()">
-                        Más info →
-                    </button>
+                    <button class="btn btn--outline" onclick="showAPIInfo()">Más info →</button>
                 </div>
                 
-                <!-- Feature 6: Free & Open Source -->
+                <!-- Feature 6 -->
                 <div class="feature-card">
                     <div class="feature-icon">🍺</div>
                     <h3 class="feature-title">100% Gratis y Open Source</h3>
@@ -204,53 +194,9 @@
                         <li>✅ Sin registro requerido</li>
                         <li>✅ Funciona offline (PWA)</li>
                     </ul>
-                    <button class="btn btn--outline" onclick="window.open('https://github.com/JCazorla90/DnD-Character-Forge', '_blank')">
-                        Ver código →
-                    </button>
+                    <button class="btn btn--outline" onclick="window.open('https://github.com/JCazorla90/DnD-Character-Forge', '_blank')">Ver código →</button>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Technology Stack -->
-    <section class="tech-stack">
-        <div class="container">
-            <h2 class="section-title">
-                <span class="title-ornament">🛠️</span>
-                Stack Tecnológico
-                <span class="title-ornament">🛠️</span>
-            </h2>
-            
-            <div class="tech-grid">
-                <div class="tech-item">
-                    <div class="tech-icon">🎨</div>
-                    <span class="tech-name">HTML5 + CSS3</span>
-                </div>
-                <div class="tech-item">
-                    <div class="tech-icon">⚡</div>
-                    <span class="tech-name">Vanilla JS</span>
-                </div>
-                <div class="tech-item">
-                    <div class="tech-icon">📊</div>
-                    <span class="tech-name">Chart.js</span>
-                </div>
-                <div class="tech-item">
-                    <div class="tech-icon">📄</div>
-                    <span class="tech-name">jsPDF</span>
-                </div>
-                <div class="tech-item">
-                    <div class="tech-icon">🎲</div>
-                    <span class="tech-name">Three.js</span>
-                </div>
-                <div class="tech-item">
-                    <div class="tech-icon">🔗</div>
-                    <span class="tech-name">ethers.js</span>
-                </div>
-            </div>
-            
-            <p class="tech-note">
-                Sin frameworks pesados • Pure JavaScript para máximo rendimiento
-            </p>
         </div>
     </section>
 
@@ -332,9 +278,9 @@
                 Crea tu personaje épico en menos de 3 minutos
             </p>
             <div class="cta-buttons">
-                <button class="btn btn--primary btn--large" onclick="navigateTo('wizard')">
+                <a href="./wizard.html" class="btn btn--primary btn--large">
                     🎲 Empezar Ahora
-                </button>
+                </a>
                 <button class="btn btn--secondary btn--large" onclick="window.open('https://github.com/JCazorla90/DnD-Character-Forge', '_blank')">
                     ⭐ Star en GitHub
                 </button>
@@ -379,7 +325,6 @@
                     <ul class="footer-links">
                         <li><a href="https://github.com/JCazorla90">GitHub Profile</a></li>
                         <li><a href="mailto:jcazorla90@example.com">Email</a></li>
-                        <li><a href="https://discord.gg/yourserver">Discord</a></li>
                     </ul>
                 </div>
             </div>
@@ -413,25 +358,18 @@
         </div>
     </footer>
 
-    <!-- Scripts - CORREGIDO: Rutas absolutas desde root -->
-    <script src="/DnD-Character-Forge/js/data/dnd-data.js"></script>
-    <script src="/DnD-Character-Forge/js/core/app.js"></script>
+    <!-- Scripts -->
+    <script src="./js/data/dnd-data.js"></script>
+    <script src="./js/core/app.js"></script>
     <script>
-        // Navigation
-        function navigateTo(page) {
-            console.log(`🎲 Navegando a: ${page}`);
-            alert(`Próximamente: ${page} page`);
-            // TODO: Implementar SPA routing
-        }
-
         function generateRandom() {
-            console.log('⚡ Generando personaje aleatorio...');
-            alert('🎲 Generando personaje aleatorio...\n\n¡Próximamente!');
+            window.location.href = './wizard.html?mode=random';
         }
 
         function activateChaos() {
-            console.log('🌀 MODO CHAOS ACTIVADO');
-            alert('🌀 ¡ADVERTENCIA: MODO CHAOS ACTIVADO!\n\nPreparate para personajes completamente locos:\n• Mago con 18 FUE y 6 INT\n• Bárbaro lanzando Bola de Fuego\n• Clérigo con hacha grande\n\n¿Estás preparado? 😈');
+            if (confirm('🌀 ¿Activar MODO CHAOS?\n\n• Stats completamente aleatorios\n• Combinaciones imposibles\n• ¡Diversión asegurada!\n\n¿Continuar?')) {
+                window.location.href = './wizard.html?mode=chaos';
+            }
         }
 
         function showDemo() {
@@ -462,28 +400,6 @@
             });
         });
 
-        // Active nav link
-        const sections = document.querySelectorAll('section[id]');
-        const navLinks = document.querySelectorAll('.nav-link');
-
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (window.pageYOffset >= sectionTop - 200) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${current}`) {
-                    link.classList.add('active');
-                }
-            });
-        });
-
         console.log(`
 ╔═══════════════════════════════════════════════════════════╗
 ║                                                           ║
@@ -492,8 +408,6 @@
 ║                                                           ║
 ║     Copyright (c) 2025 José Cazorla                      ║
 ║     Licensed under MIT License                           ║
-║                                                           ║
-║     "Roll for initiative..."                             ║
 ║                                                           ║
 ╚═══════════════════════════════════════════════════════════╝
         `);
