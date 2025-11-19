@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧙 Character Wizard - D&D Character Forge</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/wizard.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧙</text></svg>">
+</head>
+<body class="wizard-page">
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 🧙 D&D CHARACTER WIZARD                                     -->
+    <!-- Copyright (c) 2025 José Cazorla                            -->
+    <!-- https://github.com/JCazorla90/DnD-Character-Forge          -->
+    <!-- Licensed under MIT License                                 -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    
+    <!-- Header Mini -->
+    <header class="wizard-header-mini">
+        <a href="./index.html" class="back-link">← Volver al inicio</a>
+        <div class="logo-mini">
+            <span class="logo-icon">🐉</span>
+            <span>D&D Character Forge</span>
+        </div>
+    </header>
+    
+    <!-- Wizard Container (será llenado por JavaScript) -->
+    <div id="wizard-container"></div>
+    
+    <!-- Scripts -->
+    <script src="./js/data/dnd-data.js"></script>
+    <script src="./js/core/app.js"></script>
+    <script src="./js/features/character-wizard.js"></script>
+    <script>
+        // Detectar modo desde URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+        
+        // Iniciar wizard al cargar
+        document.addEventListener('DOMContentLoaded', () => {
+            wizard.start();
+            
+            if (mode === 'random') {
+                // Generar personaje aleatorio
+                setTimeout(() => {
+                    wizard.character.race = Object.keys(DND_DATA.races)[Math.floor(Math.random() * Object.keys(DND_DATA.races).length)];
+                    wizard.character.class = Object.keys(DND_DATA.classes)[Math.floor(Math.random() * Object.keys(DND_DATA.classes).length)];
+                    wizard.character.background = Object.keys(DND_DATA.backgrounds)[Math.floor(Math.random() * Object.keys(DND_DATA.backgrounds).length)];
+                    wizard.setStatMethod('roll');
+                    wizard.character.name = `Aventurero ${Math.floor(Math.random() * 1000)}`;
+                    
+                    forge.showNotification('⚡ Personaje aleatorio generado!', 'success');
+                }, 500);
+            } else if (mode === 'chaos') {
+                // Modo CHAOS: completamente aleatorio
+                setTimeout(() => {
+                    wizard.character.race = Object.keys(DND_DATA.races)[Math.floor(Math.random() * Object.keys(DND_DATA.races).length)];
+                    wizard.character.class = Object.keys(DND_DATA.classes)[Math.floor(Math.random() * Object.keys(DND_DATA.classes).length)];
+                    wizard.character.background = Object.keys(DND_DATA.backgrounds)[Math.floor(Math.random() * Object.keys(DND_DATA.backgrounds).length)];
+                    
+                    // Stats CHAOS: completamente random
+                    Object.keys(wizard.character.stats).forEach(stat => {
+                        wizard.character.stats[stat] = Math.floor(Math.random() * 15) + 3; // 3-18
+                    });
+                    
+                    wizard.character.name = `CHAOS ${Math.floor(Math.random() * 9999)}`;
+                    
+                    forge.showNotification('🌀 MODO CHAOS ACTIVADO! Stats completamente locos!', 'warning', 5000);
+                }, 500);
+            }
+        });
+        
+        console.log('🧙 Character Wizard Page loaded');
+    </script>
+</body>
+</html>
