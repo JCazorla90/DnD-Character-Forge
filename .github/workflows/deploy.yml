@@ -1,0 +1,53 @@
+###
+# 🐉 D&D CHARACTER FORGE - GITHUB PAGES DEPLOYMENT
+# 
+# Copyright (c) 2025 José Cazorla
+# https://github.com/JCazorla90/DnD-Character-Forge
+# Licensed under MIT License
+#
+# Este workflow deploya automáticamente a GitHub Pages
+###
+
+name: 🚀 Deploy to GitHub Pages
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v3
+
+      - name: 🔧 Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: 📦 Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: 'docs'
+
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
+
+      - name: ✅ Success
+        run: echo "🎉 D&D Character Forge deployed successfully!"
