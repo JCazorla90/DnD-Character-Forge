@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐉 Bestiario - D&D Character Forge</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/bestiary.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐉</text></svg>">
+</head>
+<body class="bestiary-page">
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 🐉 D&D BESTIARY                                             -->
+    <!-- Copyright (c) 2025 José Cazorla                            -->
+    <!-- https://github.com/JCazorla90/DnD-Character-Forge          -->
+    <!-- Licensed under MIT License                                 -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    
+    <!-- Header Mini -->
+    <header class="wizard-header-mini">
+        <a href="./index.html" class="back-link">← Volver al inicio</a>
+        <div class="logo-mini">
+            <span class="logo-icon">🐉</span>
+            <span>D&D Character Forge</span>
+        </div>
+    </header>
+    
+    <!-- Bestiary Container -->
+    <div id="bestiary-container">
+        <div class="loading-state">
+            <div class="loading-spinner"></div>
+            <p>🔄 Cargando criaturas desde DnD5eAPI...</p>
+        </div>
+    </div>
+    
+    <!-- Modal for creature details -->
+    <div id="creature-modal" class="modal" style="display: none;"></div>
+    
+    <!-- Scripts -->
+    <script src="./js/data/dnd-data.js"></script>
+    <script src="./js/core/app.js"></script>
+    <script src="./js/features/api-integration.js"></script>
+    <script src="./js/features/bestiary.js"></script>
+    <script>
+        // Cargar criaturas al iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🐉 Bestiary page loaded');
+            bestiary.loadCreatures();
+        });
+        
+        // Cerrar modal al hacer click fuera
+        document.addEventListener('click', (e) => {
+            const modal = document.getElementById('creature-modal');
+            if (e.target === modal) {
+                bestiary.closeModal();
+            }
+        });
+        
+        // Atajos de teclado
+        document.addEventListener('keydown', (e) => {
+            // ESC para cerrar modal
+            if (e.key === 'Escape') {
+                bestiary.closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
