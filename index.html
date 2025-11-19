@@ -14,8 +14,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     
-    <!-- Styles -->
-    <link rel="stylesheet" href="./css/main.css">
+    <!-- Styles - CORREGIDO: Ruta absoluta desde root -->
+    <link rel="stylesheet" href="/DnD-Character-Forge/css/main.css">
     
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐉</text></svg>">
@@ -413,8 +413,9 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
-    <script src="./js/core/app.js"></script>
+    <!-- Scripts - CORREGIDO: Rutas absolutas desde root -->
+    <script src="/DnD-Character-Forge/js/data/dnd-data.js"></script>
+    <script src="/DnD-Character-Forge/js/core/app.js"></script>
     <script>
         // Navigation
         function navigateTo(page) {
