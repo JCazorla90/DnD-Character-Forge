@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2025 Jose Cazorla
+Copyright (c) 2025 José Cazorla (JCazorla90)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,31 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+ATTRIBUTION REQUIREMENT:
+Any use, modification, or distribution of this software must include
+visible attribution to the original author:
+
+  "D&D Character Forge by José Cazorla (https://github.com/JCazorla90/DnD-Character-Forge)"
+
+This attribution must be displayed in:
+- User-facing interfaces (e.g., footer, about page)
+- Modified source code files
+- Documentation
+
+---
+
+ADDITIONAL NOTICES:
+
+D&D Content License:
+This project uses content under the Open Game License (OGL 5.1).
+Dungeons & Dragons and D&D are registered trademarks of Wizards of the Coast LLC.
+This project is not affiliated with, endorsed, sponsored, or specifically 
+approved by Wizards of the Coast.
+
+Third-Party Assets:
+- Character portraits from Lexica.art (various artists)
+- Icons from various open-source collections
+- API data from DnD5eAPI.co and Open5e.com
