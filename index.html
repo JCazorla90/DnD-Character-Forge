@@ -1,416 +1,209 @@
+<!--
+  D&D Character Forge
+  Copyright (c) 2025 José Cazorla
+  https://github.com/JCazorla90/DnD-Character-Forge
+  Licensed under MIT License
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="D&D Character Forge - Generador y gestor de personajes de Dungeons & Dragons 5e. Alternativa gratuita a D&D Beyond.">
-    <meta name="keywords" content="D&D, Dungeons and Dragons, character creator, 5e, RPG, character sheet">
+    <meta name="description" content="Generador de personajes para Dungeons & Dragons 5e - Crea, personaliza y exporta fichas de personajes">
     <meta name="author" content="José Cazorla">
-    
-    <title>🐉 D&D Character Forge - Epic Character Creator</title>
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-    
-    <!-- Styles -->
-    <link rel="stylesheet" href="./css/main.css">
-    
-    <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐉</text></svg>">
+    <title>D&D Character Forge - Generador de Personajes</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-    <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- 🐉 D&D CHARACTER FORGE                                      -->
-    <!-- Copyright (c) 2025 José Cazorla                            -->
-    <!-- https://github.com/JCazorla90/DnD-Character-Forge          -->
-    <!-- Licensed under MIT License                                 -->
-    <!-- ═══════════════════════════════════════════════════════════ -->
-    
-    <!-- Header -->
-    <header class="site-header">
-        <nav class="nav-container">
-            <div class="nav-logo">
-                <span class="logo-icon">🐉</span>
-                <span class="logo-text">D&D Character Forge</span>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="#home" class="nav-link active">Inicio</a></li>
-                <li><a href="#features" class="nav-link">Características</a></li>
-                <li><a href="#about" class="nav-link">Acerca de</a></li>
-                <li><a href="https://github.com/JCazorla90/DnD-Character-Forge" target="_blank" class="nav-link">
-                    <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
-                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-                    </svg>
-                    GitHub
-                </a></li>
-            </ul>
-            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </nav>
-    </header>
+    <div class="container">
+        <header>
+            <h1>⚔️ D&D Character Forge 🐉</h1>
+            <p class="subtitle">Generador Épico de Personajes para Dungeons & Dragons 5e</p>
+            <a href="https://github.com/JCazorla90/DnD-Character-Forge" class="github-link" target="_blank">📖 Ver en GitHub</a>
+        </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-background">
-            <div class="hero-overlay"></div>
-        </div>
-        
-        <div class="hero-content">
-            <h1 class="hero-title">
-                <span class="title-line">⚔️ D&D CHARACTER ⚔️</span>
-                <span class="title-line title-line--large">FORGE</span>
-            </h1>
-            
-            <p class="hero-subtitle">
-                La alternativa definitiva a D&D Beyond y Demiplane
-            </p>
-            
-            <p class="hero-description">
-                Crea personajes épicos • Gestiona fichas interactivas • Genera encuentros caóticos
-            </p>
-            
-            <div class="hero-buttons">
-                <a href="./wizard.html" class="btn btn--primary btn--large">
-                    🎲 Crear Personaje
-                </a>
-                <button class="btn btn--secondary btn--large" onclick="generateRandom()">
-                    ⚡ Aleatorio
-                </button>
-                <button class="btn btn--chaos btn--large" onclick="activateChaos()">
-                    🌀 Modo Chaos
-                </button>
-            </div>
-            
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <span class="stat-number">12,500+</span>
-                    <span class="stat-label">Personajes creados</span>
+        <div class="main-content">
+            <div class="card generator-panel">
+                <h2>🎲 Crear Personaje</h2>
+                <div class="generation-mode">
+                    <button id="randomBtn" class="btn btn--primary">⚡ Generar Aleatorio</button>
+                    <button id="toggleCustom" class="btn btn--secondary">⚙️ Personalizar</button>
+                    <button id="chaosBtn" class="btn btn--chaos">🌀 Modo Chaos</button>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-number">30+</span>
-                    <span class="stat-label">Criaturas</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">100%</span>
-                    <span class="stat-label">Gratis</span>
-                </div>
-            </div>
-        </div>
-        
-        <div class="hero-scroll">
-            <span>Desliza para explorar</span>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-        </div>
-    </section>
 
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <div class="container">
-            <h2 class="section-title">
-                <span class="title-ornament">⚔️</span>
-                Características Épicas
-                <span class="title-ornament">⚔️</span>
-            </h2>
-            
-            <div class="features-grid">
-                <!-- Feature 1 -->
-                <div class="feature-card">
-                    <div class="feature-icon">🎨</div>
-                    <h3 class="feature-title">Generador Triple Modo</h3>
-                    <ul class="feature-list">
-                        <li>⚙️ <strong>Manual:</strong> Wizard paso a paso estilo Demiplane</li>
-                        <li>🎲 <strong>Aleatorio:</strong> Personaje balanceado en 3 segundos</li>
-                        <li>🌀 <strong>Chaos:</strong> Mago con 18 FUE y 6 INT (¡Locura total!)</li>
-                    </ul>
-                    <a href="./wizard.html" class="btn btn--outline">Probar ahora →</a>
-                </div>
-                
-                <!-- Feature 2 -->
-                <div class="feature-card">
-                    <div class="feature-icon">📋</div>
-                    <h3 class="feature-title">Ficha Interactiva</h3>
-                    <ul class="feature-list">
-                        <li>⚔️ Pestañas: Combat, Spells, Inventory, Features</li>
-                        <li>🎲 Dice roller 3D integrado</li>
-                        <li>💾 Autosave en LocalStorage</li>
-                        <li>📊 Tracking de HP, spell slots, usos</li>
-                    </ul>
-                    <button class="btn btn--outline" onclick="showDemo()">Ver demo →</button>
-                </div>
-                
-                <!-- Feature 3 -->
-                <div class="feature-card">
-                    <div class="feature-icon">🐉</div>
-                    <h3 class="feature-title">Bestiario y Encuentros</h3>
-                    <ul class="feature-list">
-                        <li>📚 30+ criaturas con stats completos</li>
-                        <li>🎯 Generador de encuentros balanceados</li>
-                        <li>🔍 Filtros por tipo, CR, ambiente</li>
-                        <li>🌀 CHAOS: Goblins con Bola de Fuego</li>
-                    </ul>
-                    <button class="btn btn--outline" onclick="alert('🐉 Bestiario próximamente')">Explorar →</button>
-                </div>
-                
-                <!-- Feature 4 -->
-                <div class="feature-card">
-                    <div class="feature-icon">📤</div>
-                    <h3 class="feature-title">Exportar y Sincronizar</h3>
-                    <ul class="feature-list">
-                        <li>📄 PDF épico profesional (2 páginas)</li>
-                        <li>📦 Integración Roll20 (export/import)</li>
-                        <li>🖼️ Mint NFT (Web3 compatible)</li>
-                        <li>💾 Backup JSON completo</li>
-                    </ul>
-                    <button class="btn btn--outline" onclick="showExportOptions()">Ver opciones →</button>
-                </div>
-                
-                <!-- Feature 5 -->
-                <div class="feature-card">
-                    <div class="feature-icon">🌐</div>
-                    <h3 class="feature-title">APIs Integradas</h3>
-                    <ul class="feature-list">
-                        <li>📖 DnD5eAPI (datos oficiales SRD)</li>
-                        <li>📚 Open5e (contenido OGL adicional)</li>
-                        <li>🎨 Lexica.art (retratos IA fantasy)</li>
-                        <li>⚡ Cache inteligente para performance</li>
-                    </ul>
-                    <button class="btn btn--outline" onclick="showAPIInfo()">Más info →</button>
-                </div>
-                
-                <!-- Feature 6 -->
-                <div class="feature-card">
-                    <div class="feature-icon">🍺</div>
-                    <h3 class="feature-title">100% Gratis y Open Source</h3>
-                    <ul class="feature-list">
-                        <li>✅ Sin anuncios ni paywalls</li>
-                        <li>✅ Código abierto (MIT License)</li>
-                        <li>✅ Sin registro requerido</li>
-                        <li>✅ Funciona offline (PWA)</li>
-                    </ul>
-                    <button class="btn btn--outline" onclick="window.open('https://github.com/JCazorla90/DnD-Character-Forge', '_blank')">Ver código →</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section class="about" id="about">
-        <div class="container">
-            <h2 class="section-title">
-                <span class="title-ornament">📜</span>
-                Acerca del Proyecto
-                <span class="title-ornament">📜</span>
-            </h2>
-            
-            <div class="about-content">
-                <div class="about-text">
-                    <h3>¿Por qué D&D Character Forge?</h3>
-                    <p>
-                        Como jugador de D&D, me frustró la falta de alternativas gratuitas, 
-                        completas y sin anuncios para crear y gestionar personajes. 
-                        D&D Beyond es excelente pero limitado en su versión gratuita, 
-                        y Demiplane aún está en desarrollo.
-                    </p>
-                    <p>
-                        Decidí crear una herramienta que combinara lo mejor de ambos mundos: 
-                        la facilidad de uso de Demiplane con la completitud de D&D Beyond, 
-                        pero 100% gratis, open source, y sin límites.
-                    </p>
-                    <blockquote class="about-quote">
-                        <p>
-                            "En el reino de los dados, todos somos iguales... 
-                            hasta que alguien tira un crítico."
-                        </p>
-                        <cite>- Anónimo, Bardo nivel 20</cite>
-                    </blockquote>
-                </div>
-                
-                <div class="about-roadmap">
-                    <h3>🗺️ Roadmap</h3>
-                    <div class="roadmap-item roadmap-item--complete">
-                        <div class="roadmap-version">v1.0 - The Awakening</div>
-                        <div class="roadmap-status">✅ Completado</div>
-                        <ul>
-                            <li>Generador triple modo</li>
-                            <li>Ficha interactiva</li>
-                            <li>Bestiario básico</li>
-                            <li>Export PDF + Roll20</li>
-                        </ul>
+                <div id="customPanel" class="custom-panel hidden">
+                    <h3>Personalizar Personaje</h3>
+                    <div class="form-group">
+                        <label for="charName">Nombre del Personaje</label>
+                        <input type="text" id="charName" placeholder="Ej: Thorin Escudo de Roble">
                     </div>
-                    
-                    <div class="roadmap-item roadmap-item--progress">
-                        <div class="roadmap-version">v1.5 - The Campaign</div>
-                        <div class="roadmap-status">🔄 Q1 2026</div>
-                        <ul>
-                            <li>Campaign Manager</li>
-                            <li>NPC Manager</li>
-                            <li>Quest Log</li>
-                            <li>Session Notes</li>
-                        </ul>
+                    <div class="form-group">
+                        <label for="raceSelect">Raza</label>
+                        <select id="raceSelect"><option value="">Aleatorio</option></select>
                     </div>
-                    
-                    <div class="roadmap-item">
-                        <div class="roadmap-version">v2.0 - The Multiverse</div>
-                        <div class="roadmap-status">📅 Q2 2026</div>
-                        <ul>
-                            <li>Soporte D&D 3.5e y 4e</li>
-                            <li>Pathfinder 1e/2e</li>
-                            <li>Homebrew content system</li>
-                        </ul>
+                    <div class="form-group">
+                        <label for="classSelect">Clase</label>
+                        <select id="classSelect"><option value="">Aleatorio</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="backgroundSelect">Trasfondo</label>
+                        <select id="backgroundSelect"><option value="">Aleatorio</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="alignmentSelect">Alineamiento</label>
+                        <select id="alignmentSelect"><option value="">Aleatorio</option></select>
+                    </div>
+                    <button id="customGenerateBtn" class="btn btn--primary">Crear Personalizado</button>
+                </div>
+            </div>
+
+            <div id="characterSheet" class="card character-sheet hidden">
+                <div class="sheet-header">
+                    <h2 id="charTitle">⚔️ Personaje Generado</h2>
+                    <div class="header-buttons">
+                        <button id="downloadBtn" class="btn btn--success">📄 Descargar PDF</button>
+                        <button id="exportJSONBtn" class="btn btn--secondary">💾 Exportar JSON</button>
+                        <button id="regenPortrait" class="btn btn--secondary">🔄 Nueva Imagen</button>
                     </div>
                 </div>
+
+                <div class="character-content">
+                    <div class="character-visual">
+                        <div class="avatar-container">
+                            <svg id="charAvatar" class="character-avatar" viewBox="0 0 120 120"></svg>
+                        </div>
+                        <div class="portrait-container">
+                            <img id="aiPortrait" class="character-portrait" alt="Retrato del personaje">
+                        </div>
+                    </div>
+
+                    <div class="character-info">
+                        <div class="info-section">
+                            <h3>📋 Información Básica</h3>
+                            <div class="info-grid">
+                                <div class="info-item"><span class="label">Nombre:</span><span id="displayName" class="value">-</span></div>
+                                <div class="info-item"><span class="label">Raza:</span><span id="displayRace" class="value">-</span></div>
+                                <div class="info-item"><span class="label">Clase:</span><span id="displayClass" class="value">-</span></div>
+                                <div class="info-item"><span class="label">Nivel:</span><span id="displayLevel" class="value">1</span></div>
+                                <div class="info-item"><span class="label">Trasfondo:</span><span id="displayBackground" class="value">-</span></div>
+                                <div class="info-item"><span class="label">Alineamiento:</span><span id="displayAlignment" class="value">-</span></div>
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>⚡ Nivel de Poder</h3>
+                            <div id="powerBar" class="power-bar"></div>
+                            <p id="powerLevel" class="power-level-text">-</p>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>📊 Características</h3>
+                            <div class="stats-grid">
+                                <div class="stat-box"><div class="stat-name">FUE</div><div class="stat-value" id="statStr">10</div><div class="stat-modifier" id="modStr">+0</div></div>
+                                <div class="stat-box"><div class="stat-name">DES</div><div class="stat-value" id="statDex">10</div><div class="stat-modifier" id="modDex">+0</div></div>
+                                <div class="stat-box"><div class="stat-name">CON</div><div class="stat-value" id="statCon">10</div><div class="stat-modifier" id="modCon">+0</div></div>
+                                <div class="stat-box"><div class="stat-name">INT</div><div class="stat-value" id="statInt">10</div><div class="stat-modifier" id="modInt">+0</div></div>
+                                <div class="stat-box"><div class="stat-name">SAB</div><div class="stat-value" id="statWis">10</div><div class="stat-modifier" id="modWis">+0</div></div>
+                                <div class="stat-box"><div class="stat-name">CAR</div><div class="stat-value" id="statCha">10</div><div class="stat-modifier" id="modCha">+0</div></div>
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>⚔️ Combate</h3>
+                            <div class="combat-grid">
+                                <div class="combat-item"><span class="label">❤️ Puntos de Golpe</span><span id="displayHP" class="value big">-</span></div>
+                                <div class="combat-item"><span class="label">🛡️ Clase de Armadura</span><span id="displayAC" class="value big">10</span></div>
+                                <div class="combat-item"><span class="label">👟 Velocidad</span><span id="displaySpeed" class="value">30 ft</span></div>
+                                <div class="combat-item"><span class="label">⚡ Iniciativa</span><span id="displayInit" class="value">+0</span></div>
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>🎯 Salvaciones y Habilidades</h3>
+                            <div class="info-grid">
+                                <div class="info-item"><span class="label">Salvaciones:</span><span id="displaySavingThrows" class="value">-</span></div>
+                                <div class="info-item"><span class="label">Habilidades:</span><span id="displaySkills" class="value">-</span></div>
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>🐉 Rasgos Raciales</h3>
+                            <ul id="racialTraits" class="traits-list"></ul>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>🎓 Competencias de Clase</h3>
+                            <ul id="classProficiencies" class="traits-list"></ul>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>✨ Características de Clase</h3>
+                            <ul id="classFeatures" class="traits-list"></ul>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>🎒 Equipo Inicial</h3>
+                            <ul id="equipment" class="traits-list"></ul>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>📜 Trasfondo: <span id="backgroundName"></span></h3>
+                            <div class="info-grid">
+                                <div class="info-item"><span class="label">Habilidades:</span><span id="backgroundSkills" class="value">-</span></div>
+                                <div class="info-item"><span class="label">Rasgo:</span><span id="backgroundFeature" class="value">-</span></div>
+                            </div>
+                            <h4 style="margin-top: 15px; color: #667eea;">Equipo de trasfondo</h4>
+                            <ul id="backgroundEquipment" class="traits-list"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button id="newCharBtn" class="btn btn--primary">🎲 Nuevo Personaje</button>
+                    <button id="importJSONBtn" class="btn btn--secondary">📥 Importar JSON</button>
+                    <button id="historyBtn" class="btn btn--secondary">📚 Historial</button>
+                    <button id="shareBtn" class="btn btn--secondary">📤 Compartir</button>
+                </div>
             </div>
         </div>
-    </section>
 
-    <!-- CTA Section -->
-    <section class="cta">
-        <div class="cta-content">
-            <h2 class="cta-title">¿Listo para tu próxima aventura?</h2>
-            <p class="cta-text">
-                Crea tu personaje épico en menos de 3 minutos
-            </p>
-            <div class="cta-buttons">
-                <a href="./wizard.html" class="btn btn--primary btn--large">
-                    🎲 Empezar Ahora
-                </a>
-                <button class="btn btn--secondary btn--large" onclick="window.open('https://github.com/JCazorla90/DnD-Character-Forge', '_blank')">
-                    ⭐ Star en GitHub
-                </button>
+        <div class="card bestiary-section" style="margin-top: 40px;">
+            <h2>🐉 Bestiario</h2>
+            <p>Genera criaturas aleatorias para tus encuentros</p>
+            <div class="generation-mode">
+                <button id="generateCreatureBtn" class="btn btn--primary">🎲 Criatura Aleatoria</button>
+                <button id="generateEncounterBtn" class="btn btn--secondary">⚔️ Generar Encuentro</button>
+            </div>
+            <div id="creatureSheet" class="creature-display hidden" style="margin-top: 20px;">
+                <h3 id="creatureName">-</h3>
+                <p><strong>Tipo:</strong> <span id="creatureType">-</span></p>
+                <p><strong>CR:</strong> <span id="creatureCR">-</span> | <strong>XP:</strong> <span id="creatureXP">-</span></p>
+                <p><strong>CA:</strong> <span id="creatureAC">-</span> | <strong>HP:</strong> <span id="creatureHP">-</span></p>
+                <div id="creatureDetails" style="margin-top: 15px;"></div>
             </div>
         </div>
-    </section>
 
-    <!-- Footer -->
-    <footer class="site-footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>D&D Character Forge</h4>
-                    <p>
-                        Generador y gestor de personajes de D&D 5e.<br>
-                        100% gratuito, open source, sin anuncios.
-                    </p>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Enlaces</h4>
-                    <ul class="footer-links">
-                        <li><a href="https://github.com/JCazorla90/DnD-Character-Forge">GitHub</a></li>
-                        <li><a href="https://github.com/JCazorla90/DnD-Character-Forge/issues">Reportar Bug</a></li>
-                        <li><a href="./CONTRIBUTING.md">Contribuir</a></li>
-                        <li><a href="./LICENSE">Licencia MIT</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Recursos</h4>
-                    <ul class="footer-links">
-                        <li><a href="https://www.dnd5eapi.co/">DnD5eAPI</a></li>
-                        <li><a href="https://open5e.com/">Open5e</a></li>
-                        <li><a href="https://www.dndbeyond.com/">D&D Beyond</a></li>
-                        <li><a href="https://roll20.net/">Roll20</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Contacto</h4>
-                    <ul class="footer-links">
-                        <li><a href="https://github.com/JCazorla90">GitHub Profile</a></li>
-                        <li><a href="mailto:jcazorla90@example.com">Email</a></li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <div class="footer-copyright">
-                    <p>
-                        ⚔️ D&D Character Forge v1.0 
-                        | Created with ❤️ by 
-                        <a href="https://github.com/JCazorla90" target="_blank" rel="noopener">
-                            José Cazorla
-                        </a>
-                    </p>
-                    <p class="footer-attribution">
-                        © 2025 José Cazorla | 
-                        <a href="./LICENSE">MIT License</a> | 
-                        <a href="https://github.com/JCazorla90/DnD-Character-Forge">
-                            View Source on GitHub
-                        </a>
-                    </p>
-                </div>
-                
-                <div class="footer-disclaimer">
-                    <p class="disclaimer-text">
-                        ⚠️ Este proyecto NO está afiliado con Wizards of the Coast.<br>
-                        D&D y Dungeons & Dragons son marcas registradas de Wizards of the Coast LLC.<br>
-                        Contenido usado bajo Open Game License (OGL 5.1).
-                    </p>
-                </div>
-            </div>
+        <footer>
+            <p>⚔️ D&D Character Forge v1.0 | Creado con ❤️ por <a href="https://github.com/JCazorla90">José Cazorla</a></p>
+            <p>© 2025 José Cazorla | <a href="https://github.com/JCazorla90/DnD-Character-Forge/blob/main/LICENSE">MIT License</a></p>
+        </footer>
+    </div>
+
+    <div id="historyModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">×</span>
+            <h2>📚 Historial de Personajes</h2>
+            <div id="historyList"></div>
         </div>
-    </footer>
+    </div>
 
-    <!-- Scripts -->
+    <input type="file" id="fileImport" accept=".json" style="display: none;">
+
+    <button id="toggleTheme" class="theme-toggle">🌙 Modo Oscuro</button>
+
     <script src="./js/data/dnd-data.js"></script>
+    <script src="./js/data/bestiary.js"></script>
     <script src="./js/core/app.js"></script>
-    <script>
-        function generateRandom() {
-            window.location.href = './wizard.html?mode=random';
-        }
-
-        function activateChaos() {
-            if (confirm('🌀 ¿Activar MODO CHAOS?\n\n• Stats completamente aleatorios\n• Combinaciones imposibles\n• ¡Diversión asegurada!\n\n¿Continuar?')) {
-                window.location.href = './wizard.html?mode=chaos';
-            }
-        }
-
-        function showDemo() {
-            alert('📋 Demo de ficha interactiva próximamente');
-        }
-
-        function showExportOptions() {
-            alert('📤 Opciones de exportación:\n• PDF profesional\n• Roll20 JSON\n• Backup completo\n• NFT minting');
-        }
-
-        function showAPIInfo() {
-            alert('🌐 APIs integradas:\n• DnD5eAPI: Datos oficiales SRD\n• Open5e: Contenido OGL\n• Lexica: Retratos IA');
-        }
-
-        // Mobile navigation
-        document.getElementById('navToggle').addEventListener('click', function() {
-            document.querySelector('.nav-menu').classList.toggle('nav-menu--active');
-        });
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
-
-        console.log(`
-╔═══════════════════════════════════════════════════════════╗
-║                                                           ║
-║     🐉 D&D CHARACTER FORGE v1.0                          ║
-║     https://github.com/JCazorla90/DnD-Character-Forge    ║
-║                                                           ║
-║     Copyright (c) 2025 José Cazorla                      ║
-║     Licensed under MIT License                           ║
-║                                                           ║
-╚═══════════════════════════════════════════════════════════╝
-        `);
-    </script>
 </body>
 </html>
