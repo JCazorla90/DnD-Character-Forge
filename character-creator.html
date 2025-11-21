@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creador de Personajes - D&D Advanced Tools</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/character-creator.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+    <!-- Header Navigation -->
+    <header class="main-header">
+        <nav class="nav-container">
+            <div class="logo">
+                <a href="index.html"><h1>🎲 D&D Advanced Tools</h1></a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="character-creator.html" class="active">Creador de Personajes</a></li>
+                <li><a href="bestiary.html">Bestiario</a></li>
+                <li><a href="campaign-manager.html">Gestor de Campañas</a></li>
+                <li><a href="gallery.html">Galería NFT</a></li>
+            </ul>
+            <button id="walletConnect" class="btn-wallet">Conectar Wallet</button>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="character-creator">
+        <div class="container">
+            <div class="creator-header">
+                <h2>⚔️ Asistente de Creación de Personajes</h2>
+                <p>Crea tu personaje de D&D 5e paso a paso</p>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-steps">
+                    <div class="step active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Básico</div>
+                    </div>
+                    <div class="step" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Raza</div>
+                    </div>
+                    <div class="step" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Clase</div>
+                    </div>
+                    <div class="step" data-step="4">
+                        <div class="step-number">4</div>
+                        <div class="step-label">Atributos</div>
+                    </div>
+                    <div class="step" data-step="5">
+                        <div class="step-number">5</div>
+                        <div class="step-label">Skills</div>
+                    </div>
+                    <div class="step" data-step="6">
+                        <div class="step-number">6</div>
+                        <div class="step-label">Equipo</div>
+                    </div>
+                    <div class="step" data-step="7">
+                        <div class="step-number">7</div>
+                        <div class="step-label">Finalizar</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Creator Content -->
+            <div class="creator-content">
+                <!-- Left Panel: Form Steps -->
+                <div class="creator-panel">
+                    <div class="panel-content">
+                        <!-- Step 1: Basic Info -->
+                        <div id="step1" class="creator-step active">
+                            <h3>Información Básica</h3>
+                            <div class="form-group">
+                                <label for="charName">Nombre del Personaje *</label>
+                                <input type="text" id="charName" placeholder="Ej: Thorin Escudo de Roble" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="charLevel">Nivel Inicial</label>
+                                <input type="number" id="charLevel" value="1" min="1" max="20">
+                            </div>
+                            <div class="form-group">
+                                <label for="charBackground">Trasfondo</label>
+                                <select id="charBackground">
+                                    <option value="">Selecciona un trasfondo...</option>
+                                    <option value="acolyte">Acólito</option>
+                                    <option value="criminal">Criminal</option>
+                                    <option value="folk-hero">Héroe del Pueblo</option>
+                                    <option value="noble">Noble</option>
+                                    <option value="sage">Sabio</option>
+                                    <option value="soldier">Soldado</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="charAlignment">Alineamiento</label>
+                                <select id="charAlignment">
+                                    <option value="lawful-good">Legal Bueno</option>
+                                    <option value="neutral-good">Neutral Bueno</option>
+                                    <option value="chaotic-good">Caótico Bueno</option>
+                                    <option value="lawful-neutral">Legal Neutral</option>
