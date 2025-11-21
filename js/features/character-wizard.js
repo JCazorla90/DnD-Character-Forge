@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════════════════════════
- * 🧙 D&D CHARACTER FORGE - CHARACTER WIZARD
+ * 🧙 D&D CHARACTER FORGE - CHARACTER WIZARD (FIXED)
  * 
  * Sistema completo de generación de personajes paso a paso
  * 
@@ -43,7 +43,7 @@ class CharacterWizard {
       createdAt: null
     };
     
-    this.statGenerationMethod = 'point-buy'; // 'point-buy', 'standard-array', 'roll'
+    this.statGenerationMethod = 'point-buy';
     this.pointBuyRemaining = 27;
     
     console.log('🧙 Character Wizard initialized');
@@ -53,9 +53,6 @@ class CharacterWizard {
   // 🎬 WIZARD NAVIGATION
   // ═══════════════════════════════════════════════════════════════
 
-  /**
-   * Iniciar el wizard
-   */
   start() {
     this.character.id = `char_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     this.character.createdAt = new Date().toISOString();
@@ -63,15 +60,15 @@ class CharacterWizard {
     this.renderWizard();
   }
 
-  /**
-   * Navegar a un paso específico
-   */
   goToStep(step) {
     if (step < 1 || step > this.totalSteps) return;
     
-    // Validar paso actual antes de continuar
     if (step > this.currentStep && !this.validateCurrentStep()) {
-      forge.showNotification('⚠️ Completa el paso actual antes de continuar', 'warning');
+      if (typeof forge !== 'undefined' && forge.showNotification) {
+        forge.showNotification('⚠️ Completa el paso actual antes de continuar', 'warning');
+      } else {
+        alert('⚠️ Completa el paso actual antes de continuar');
+      }
       return;
     }
     
@@ -79,47 +76,35 @@ class CharacterWizard {
     this.renderWizard();
   }
 
-  /**
-   * Siguiente paso
-   */
   nextStep() {
     if (this.validateCurrentStep()) {
       this.goToStep(this.currentStep + 1);
     }
   }
 
-  /**
-   * Paso anterior
-   */
   previousStep() {
     this.goToStep(this.currentStep - 1);
   }
 
-  /**
-   * Validar paso actual
-   */
   validateCurrentStep() {
     switch (this.currentStep) {
-      case 1: // Raza
+      case 1:
         return this.character.race !== null;
-      case 2: // Clase
+      case 2:
         return this.character.class !== null;
-      case 3: // Trasfondo
+      case 3:
         return this.character.background !== null;
-      case 4: // Stats
+      case 4:
         return this.validateStats();
-      case 5: // Equipo
-        return this.character.equipment.length > 0;
-      case 6: // Detalles
+      case 5:
+        return true; // Equipment auto-assigned
+      case 6:
         return this.character.name.trim().length > 0;
       default:
         return true;
     }
   }
 
-  /**
-   * Validar stats según método
-   */
   validateStats() {
     const stats = Object.values(this.character.stats);
     
@@ -139,9 +124,6 @@ class CharacterWizard {
   // 🎨 RENDER WIZARD
   // ═══════════════════════════════════════════════════════════════
 
-  /**
-   * Renderizar wizard completo
-   */
   renderWizard() {
     const container = document.getElementById('wizard-container') || this.createWizardContainer();
     
@@ -167,9 +149,6 @@ class CharacterWizard {
     this.attachEventListeners();
   }
 
-  /**
-   * Crear contenedor del wizard
-   */
   createWizardContainer() {
     const container = document.createElement('div');
     container.id = 'wizard-container';
@@ -178,9 +157,6 @@ class CharacterWizard {
     return container;
   }
 
-  /**
-   * Renderizar barra de progreso
-   */
   renderProgressBar() {
     const steps = [];
     for (let i = 1; i <= this.totalSteps; i++) {
@@ -203,17 +179,11 @@ class CharacterWizard {
     `;
   }
 
-  /**
-   * Obtener label del paso
-   */
   getStepLabel(step) {
     const labels = ['Raza', 'Clase', 'Trasfondo', 'Stats', 'Equipo', 'Detalles'];
     return labels[step - 1];
   }
 
-  /**
-   * Obtener título del paso
-   */
   getStepTitle() {
     const titles = [
       '🎭 Elige tu Raza',
@@ -226,9 +196,6 @@ class CharacterWizard {
     return titles[this.currentStep - 1];
   }
 
-  /**
-   * Obtener subtítulo del paso
-   */
   getStepSubtitle() {
     const subtitles = [
       'Tu herencia determina tus rasgos y habilidades innatas',
@@ -241,9 +208,6 @@ class CharacterWizard {
     return subtitles[this.currentStep - 1];
   }
 
-  /**
-   * Renderizar contenido del paso
-   */
   renderStepContent() {
     switch (this.currentStep) {
       case 1: return this.renderRaceSelection();
@@ -256,12 +220,10 @@ class CharacterWizard {
     }
   }
 
-  /**
-   * Renderizar botones de navegación
-   */
   renderNavigationButtons() {
     const prevDisabled = this.currentStep === 1;
     const nextLabel = this.currentStep === this.totalSteps ? '✨ Finalizar' : 'Siguiente →';
+    const nextAction = this.currentStep === this.totalSteps ? 'wizard.finishWizard()' : 'wizard.nextStep()';
     
     return `
       <button 
@@ -274,7 +236,7 @@ class CharacterWizard {
       
       <button 
         class="btn btn--primary" 
-        onclick="${this.currentStep === this.totalSteps ? 'wizard.finishWizard()' : 'wizard.nextStep()'}"
+        onclick="${nextAction}"
       >
         ${nextLabel}
       </button>
@@ -286,6 +248,10 @@ class CharacterWizard {
   // ═══════════════════════════════════════════════════════════════
 
   renderRaceSelection() {
+    if (typeof DND_DATA === 'undefined' || !DND_DATA.races) {
+      return '<p class="text-center">Error: Datos de razas no disponibles. Asegúrate de que dnd-data.js está cargado.</p>';
+    }
+    
     const races = Object.keys(DND_DATA.races);
     
     return `
@@ -321,7 +287,7 @@ class CharacterWizard {
   selectRace(raceName) {
     this.character.race = raceName;
     this.renderWizard();
-    forge.log('Race selected', raceName);
+    console.log('Race selected:', raceName);
   }
 
   // ═══════════════════════════════════════════════════════════════
@@ -329,6 +295,10 @@ class CharacterWizard {
   // ═══════════════════════════════════════════════════════════════
 
   renderClassSelection() {
+    if (typeof DND_DATA === 'undefined' || !DND_DATA.classes) {
+      return '<p class="text-center">Error: Datos de clases no disponibles.</p>';
+    }
+    
     const classes = Object.keys(DND_DATA.classes);
     
     return `
@@ -370,7 +340,7 @@ class CharacterWizard {
     const classData = DND_DATA.classes[className];
     this.character.hp = classData.hitDie + this.calculateModifier(this.character.stats.constitution);
     this.renderWizard();
-    forge.log('Class selected', className);
+    console.log('Class selected:', className);
   }
 
   // ═══════════════════════════════════════════════════════════════
@@ -378,6 +348,10 @@ class CharacterWizard {
   // ═══════════════════════════════════════════════════════════════
 
   renderBackgroundSelection() {
+    if (typeof DND_DATA === 'undefined' || !DND_DATA.backgrounds) {
+      return '<p class="text-center">Error: Datos de trasfondos no disponibles.</p>';
+    }
+    
     const backgrounds = Object.keys(DND_DATA.backgrounds);
     
     return `
@@ -409,11 +383,11 @@ class CharacterWizard {
   selectBackground(bgName) {
     this.character.background = bgName;
     this.renderWizard();
-    forge.log('Background selected', bgName);
+    console.log('Background selected:', bgName);
   }
 
   // ═══════════════════════════════════════════════════════════════
-  // 📊 PASO 4: ASIGNACIÓN DE STATS (continuará...)
+  // 📊 PASO 4: ASIGNACIÓN DE STATS
   // ═══════════════════════════════════════════════════════════════
 
   renderStatsSelection() {
@@ -483,12 +457,11 @@ class CharacterWizard {
       });
     } else if (method === 'roll') {
       Object.keys(this.character.stats).forEach(stat => {
-        this.character.stats[stat] = forge.roll4d6DropLowest();
+        this.character.stats[stat] = this.roll4d6DropLowest();
       });
     } else {
-      // Reset to 10 for point buy
       Object.keys(this.character.stats).forEach(stat => {
-        this.character.stats[stat] = 10;
+        this.character.stats[stat] = 8;
       });
       this.pointBuyRemaining = 27;
     }
@@ -496,11 +469,18 @@ class CharacterWizard {
     this.renderWizard();
   }
 
+  roll4d6DropLowest() {
+    const rolls = Array.from({ length: 4 }, () => Math.floor(Math.random() * 6) + 1);
+    rolls.sort((a, b) => a - b);
+    return rolls.slice(1).reduce((a, b) => a + b, 0);
+  }
+
   increaseStat(stat) {
-    // Implementar lógica según método
     if (this.statGenerationMethod === 'point-buy') {
       const currentValue = this.character.stats[stat];
       if (currentValue >= 15 || this.pointBuyRemaining <= 0) return;
+      
+      if (typeof DND_DATA === 'undefined' || !DND_DATA.pointBuyCosts) return;
       
       const cost = DND_DATA.pointBuyCosts[currentValue + 1] - DND_DATA.pointBuyCosts[currentValue];
       if (cost <= this.pointBuyRemaining) {
@@ -516,6 +496,8 @@ class CharacterWizard {
       const currentValue = this.character.stats[stat];
       if (currentValue <= 8) return;
       
+      if (typeof DND_DATA === 'undefined' || !DND_DATA.pointBuyCosts) return;
+      
       const refund = DND_DATA.pointBuyCosts[currentValue] - DND_DATA.pointBuyCosts[currentValue - 1];
       this.character.stats[stat]--;
       this.pointBuyRemaining += refund;
@@ -528,13 +510,13 @@ class CharacterWizard {
   }
 
   // ═══════════════════════════════════════════════════════════════
-  // 🎒 PASO 5: EQUIPO (simplificado por ahora)
+  // 🎒 PASO 5: EQUIPO
   // ═══════════════════════════════════════════════════════════════
 
   renderEquipmentSelection() {
     return `
       <div class="equipment-container">
-        <p>El equipo inicial se asignará automáticamente según tu clase.</p>
+        <p style="text-align: center; margin-bottom: 24px;">El equipo inicial se asignará automáticamente según tu clase.</p>
         <div class="equipment-preview">
           <h3>Equipo inicial incluido:</h3>
           <ul>
@@ -553,6 +535,10 @@ class CharacterWizard {
   // ═══════════════════════════════════════════════════════════════
 
   renderFinalDetails() {
+    if (typeof DND_DATA === 'undefined' || !DND_DATA.alignments) {
+      return '<p>Error: Datos no disponibles</p>';
+    }
+    
     return `
       <div class="details-container">
         <div class="form-group">
@@ -562,14 +548,14 @@ class CharacterWizard {
             id="char-name" 
             class="form-control" 
             value="${this.character.name}"
-            onchange="wizard.character.name = this.value"
+            oninput="wizard.character.name = this.value"
             placeholder="Ej: Thorin Escudo de Roble"
           >
         </div>
         
         <div class="form-group">
-          <label>Alineamiento</label>
-          <select class="form-control" onchange="wizard.character.alignment = this.value">
+          <label for="char-alignment">Alineamiento</label>
+          <select id="char-alignment" class="form-control" onchange="wizard.character.alignment = this.value">
             ${DND_DATA.alignments.map(al => `
               <option value="${al}" ${this.character.alignment === al ? 'selected' : ''}>${al}</option>
             `).join('')}
@@ -579,9 +565,9 @@ class CharacterWizard {
         <div class="character-summary">
           <h3>Resumen de tu Personaje</h3>
           <dl>
-            <dt>Raza:</dt><dd>${this.character.race}</dd>
-            <dt>Clase:</dt><dd>${this.character.class}</dd>
-            <dt>Trasfondo:</dt><dd>${this.character.background}</dd>
+            <dt>Raza:</dt><dd>${this.character.race || 'No seleccionada'}</dd>
+            <dt>Clase:</dt><dd>${this.character.class || 'No seleccionada'}</dd>
+            <dt>Trasfondo:</dt><dd>${this.character.background || 'No seleccionado'}</dd>
             <dt>Nivel:</dt><dd>${this.character.level}</dd>
             <dt>HP:</dt><dd>${this.character.hp}</dd>
           </dl>
@@ -596,30 +582,38 @@ class CharacterWizard {
 
   finishWizard() {
     if (!this.validateCurrentStep()) {
-      forge.showNotification('⚠️ Completa todos los campos requeridos', 'warning');
+      alert('⚠️ Completa todos los campos requeridos');
       return;
     }
     
-    // Calcular AC basado en clase y dex
     this.calculateAC();
-    
-    // Asignar equipo básico
     this.assignStartingEquipment();
     
     // Guardar personaje
-    forge.saveCharacter(this.character);
+    if (typeof forge !== 'undefined' && forge.saveCharacter) {
+      forge.saveCharacter(this.character);
+    } else {
+      // Fallback a localStorage directo
+      try {
+        let characters = JSON.parse(localStorage.getItem('dnd_characters')) || [];
+        characters.unshift(this.character);
+        localStorage.setItem('dnd_characters', JSON.stringify(characters));
+      } catch (e) {
+        console.error('Error saving character:', e);
+      }
+    }
     
-    forge.showNotification(`✅ ¡${this.character.name} ha sido creado!`, 'success');
+    alert(`✅ ¡${this.character.name} ha sido creado!\n\nPersonaje guardado correctamente.`);
     console.log('Character created:', this.character);
     
-    // Navegar a ficha
-    // TODO: Implementar navegación a ficha
-    forge.log('Character created successfully', this.character);
+    // Redirigir al inicio
+    setTimeout(() => {
+      window.location.href = './index.html';
+    }, 1000);
   }
 
   calculateAC() {
     const dexMod = this.calculateModifier(this.character.stats.dexterity);
-    // Simplificado: AC base + dex
     this.character.ac = 10 + dexMod;
   }
 
@@ -631,10 +625,6 @@ class CharacterWizard {
       '50 po'
     ];
   }
-
-  // ═══════════════════════════════════════════════════════════════
-  // 🎧 EVENT LISTENERS
-  // ═══════════════════════════════════════════════════════════════
 
   attachEventListeners() {
     // Event listeners adicionales si es necesario
@@ -648,4 +638,4 @@ class CharacterWizard {
 const wizard = new CharacterWizard();
 window.wizard = wizard;
 
-console.log('✅ Character Wizard loaded');
+console.log('✅ Character Wizard loaded and ready');
