@@ -1,209 +1,362 @@
-<!--
-  D&D Character Forge
-  Copyright (c) 2025 José Cazorla
-  https://github.com/JCazorla90/DnD-Character-Forge
-  Licensed under MIT License
--->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Generador de personajes para Dungeons & Dragons 5e - Crea, personaliza y exporta fichas de personajes">
-    <meta name="author" content="José Cazorla">
-    <title>D&D Character Forge - Generador de Personajes</title>
-    <link rel="stylesheet" href="./css/styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!--
+    D&D Character Forge & NFT Generator
+    © 2025 José Cazorla Gijón (@JCazorla90)
+    Licencia: MIT (ver LICENSE en el repositorio)
+    Repos:
+      - https://github.com/JCazorla90/DnD-Character-Forge
+      - https://github.com/JCazorla90/dnd-nft-generator
+  -->
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>🐲 D&D Character Forge – Generador de Personajes D&D + NFT</title>
+
+  <!-- SEO básico -->
+  <meta name="description"
+        content="D&D Character Forge: generador de personajes para Dungeons & Dragons 5e, ficha completa en PDF, bestiario y exportación NFT lista para mintear. Gratis y sin registro.">
+  <meta name="keywords"
+        content="D&D, DnD, Dungeons and Dragons, generador de personajes, ficha DnD, character sheet, bestiario, NFT, 5e, SRD, DnD 5e, roll20">
+  <link rel="canonical" href="https://jcazorla90.github.io/DnD-Character-Forge/">
+
+  <!-- OpenGraph / Social -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="D&D Character Forge – Generador de Personajes D&D + NFT">
+  <meta property="og:description"
+        content="Crea personajes D&D 5e en segundos, descarga su ficha en PDF y exporta un paquete NFT (JSON + PNG) listo para blockchain. Todo desde el navegador.">
+  <meta property="og:url" content="https://jcazorla90.github.io/DnD-Character-Forge/">
+  <meta property="og:site_name" content="D&D Character Forge">
+  <!-- Si más adelante añades una imagen de portada, pon aquí su URL absoluta -->
+  <!-- <meta property="og:image" content="https://jcazorla90.github.io/DnD-Character-Forge/assets/images/og-image.png"> -->
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:locale:alternate" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="D&D Character Forge – Generador de Personajes D&D + NFT">
+  <meta name="twitter:description"
+        content="Genera personajes para Dungeons & Dragons 5e, ficha PDF y paquete NFT para coleccionarlos o mintearlos.">
+
+  <!-- JSON-LD básico para SEO (SoftwareApplication / Game) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "D&D Character Forge",
+    "applicationCategory": "GameApplication",
+    "operatingSystem": "Web",
+    "description": "Generador de personajes para Dungeons & Dragons 5e con ficha en PDF y exportación de paquete NFT.",
+    "author": {
+      "@type": "Person",
+      "name": "José Cazorla Gijón"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EUR"
+    },
+    "url": "https://jcazorla90.github.io/DnD-Character-Forge"
+  }
+  </script>
+
+  <!-- Fuente (opcional) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>⚔️ D&D Character Forge 🐉</h1>
-            <p class="subtitle">Generador Épico de Personajes para Dungeons & Dragons 5e</p>
-            <a href="https://github.com/JCazorla90/DnD-Character-Forge" class="github-link" target="_blank">📖 Ver en GitHub</a>
-        </header>
+  <div class="container">
+    <header class="app-header">
+      <div class="brand">
+        <h1 data-i18n="header.title">🐲 D&D Character Forge 🛡️</h1>
+        <p class="subtitle" data-i18n="header.subtitle">
+          Generador de personajes para Dungeons & Dragons 5e con ficha completa y soporte NFT.
+        </p>
+        <p class="subtitle small" data-i18n="header.subtitle2">
+          Fusión de D&D Character Forge + DnD NFT Generator – 100% gratis, sin backend y funcionando en GitHub Pages.
+        </p>
+      </div>
 
-        <div class="main-content">
-            <div class="card generator-panel">
-                <h2>🎲 Crear Personaje</h2>
-                <div class="generation-mode">
-                    <button id="randomBtn" class="btn btn--primary">⚡ Generar Aleatorio</button>
-                    <button id="toggleCustom" class="btn btn--secondary">⚙️ Personalizar</button>
-                    <button id="chaosBtn" class="btn btn--chaos">🌀 Modo Chaos</button>
-                </div>
-
-                <div id="customPanel" class="custom-panel hidden">
-                    <h3>Personalizar Personaje</h3>
-                    <div class="form-group">
-                        <label for="charName">Nombre del Personaje</label>
-                        <input type="text" id="charName" placeholder="Ej: Thorin Escudo de Roble">
-                    </div>
-                    <div class="form-group">
-                        <label for="raceSelect">Raza</label>
-                        <select id="raceSelect"><option value="">Aleatorio</option></select>
-                    </div>
-                    <div class="form-group">
-                        <label for="classSelect">Clase</label>
-                        <select id="classSelect"><option value="">Aleatorio</option></select>
-                    </div>
-                    <div class="form-group">
-                        <label for="backgroundSelect">Trasfondo</label>
-                        <select id="backgroundSelect"><option value="">Aleatorio</option></select>
-                    </div>
-                    <div class="form-group">
-                        <label for="alignmentSelect">Alineamiento</label>
-                        <select id="alignmentSelect"><option value="">Aleatorio</option></select>
-                    </div>
-                    <button id="customGenerateBtn" class="btn btn--primary">Crear Personalizado</button>
-                </div>
-            </div>
-
-            <div id="characterSheet" class="card character-sheet hidden">
-                <div class="sheet-header">
-                    <h2 id="charTitle">⚔️ Personaje Generado</h2>
-                    <div class="header-buttons">
-                        <button id="downloadBtn" class="btn btn--success">📄 Descargar PDF</button>
-                        <button id="exportJSONBtn" class="btn btn--secondary">💾 Exportar JSON</button>
-                        <button id="regenPortrait" class="btn btn--secondary">🔄 Nueva Imagen</button>
-                    </div>
-                </div>
-
-                <div class="character-content">
-                    <div class="character-visual">
-                        <div class="avatar-container">
-                            <svg id="charAvatar" class="character-avatar" viewBox="0 0 120 120"></svg>
-                        </div>
-                        <div class="portrait-container">
-                            <img id="aiPortrait" class="character-portrait" alt="Retrato del personaje">
-                        </div>
-                    </div>
-
-                    <div class="character-info">
-                        <div class="info-section">
-                            <h3>📋 Información Básica</h3>
-                            <div class="info-grid">
-                                <div class="info-item"><span class="label">Nombre:</span><span id="displayName" class="value">-</span></div>
-                                <div class="info-item"><span class="label">Raza:</span><span id="displayRace" class="value">-</span></div>
-                                <div class="info-item"><span class="label">Clase:</span><span id="displayClass" class="value">-</span></div>
-                                <div class="info-item"><span class="label">Nivel:</span><span id="displayLevel" class="value">1</span></div>
-                                <div class="info-item"><span class="label">Trasfondo:</span><span id="displayBackground" class="value">-</span></div>
-                                <div class="info-item"><span class="label">Alineamiento:</span><span id="displayAlignment" class="value">-</span></div>
-                            </div>
-                        </div>
-
-                        <div class="info-section">
-                            <h3>⚡ Nivel de Poder</h3>
-                            <div id="powerBar" class="power-bar"></div>
-                            <p id="powerLevel" class="power-level-text">-</p>
-                        </div>
-
-                        <div class="info-section">
-                            <h3>📊 Características</h3>
-                            <div class="stats-grid">
-                                <div class="stat-box"><div class="stat-name">FUE</div><div class="stat-value" id="statStr">10</div><div class="stat-modifier" id="modStr">+0</div></div>
-                                <div class="stat-box"><div class="stat-name">DES</div><div class="stat-value" id="statDex">10</div><div class="stat-modifier" id="modDex">+0</div></div>
-                                <div class="stat-box"><div class="stat-name">CON</div><div class="stat-value" id="statCon">10</div><div class="stat-modifier" id="modCon">+0</div></div>
-                                <div class="stat-box"><div class="stat-name">INT</div><div class="stat-value" id="statInt">10</div><div class="stat-modifier" id="modInt">+0</div></div>
-                                <div class="stat-box"><div class="stat-name">SAB</div><div class="stat-value" id="statWis">10</div><div class="stat-modifier" id="modWis">+0</div></div>
-                                <div class="stat-box"><div class="stat-name">CAR</div><div class="stat-value" id="statCha">10</div><div class="stat-modifier" id="modCha">+0</div></div>
-                            </div>
-                        </div>
-
-                        <div class="info-section">
-                            <h3>⚔️ Combate</h3>
-                            <div class="combat-grid">
-                                <div class="combat-item"><span class="label">❤️ Puntos de Golpe</span><span id="displayHP" class="value big">-</span></div>
-                                <div class="combat-item"><span class="label">🛡️ Clase de Armadura</span><span id="displayAC" class="value big">10</span></div>
-                                <div class="combat-item"><span class="label">👟 Velocidad</span><span id="displaySpeed" class="value">30 ft</span></div>
-                                <div class="combat-item"><span class="label">⚡ Iniciativa</span><span id="displayInit" class="value">+0</span></div>
-                            </div>
-                        </div>
-
-                        <div class="info-section">
-                            <h3>🎯 Salvaciones y Habilidades</h3>
-                            <div class="info-grid">
-                                <div class="info-item"><span class="label">Salvaciones:</span><span id="displaySavingThrows" class="value">-</span></div>
-                                <div class="info-item"><span class="label">Habilidades:</span><span id="displaySkills" class="value">-</span></div>
-                            </div>
-                        </div>
-
-                        <div class="info-section">
-                            <h3>🐉 Rasgos Raciales</h3>
-                            <ul id="racialTraits" class="traits-list"></ul>
-                        </div>
-
-                        <div class="info-section">
-                            <h3>🎓 Competencias de Clase</h3>
-                            <ul id="classProficiencies" class="traits-list"></ul>
-                        </div>
-
-                        <div class="info-section">
-                            <h3>✨ Características de Clase</h3>
-                            <ul id="classFeatures" class="traits-list"></ul>
-                        </div>
-
-                        <div class="info-section">
-                            <h3>🎒 Equipo Inicial</h3>
-                            <ul id="equipment" class="traits-list"></ul>
-                        </div>
-
-                        <div class="info-section">
-                            <h3>📜 Trasfondo: <span id="backgroundName"></span></h3>
-                            <div class="info-grid">
-                                <div class="info-item"><span class="label">Habilidades:</span><span id="backgroundSkills" class="value">-</span></div>
-                                <div class="info-item"><span class="label">Rasgo:</span><span id="backgroundFeature" class="value">-</span></div>
-                            </div>
-                            <h4 style="margin-top: 15px; color: #667eea;">Equipo de trasfondo</h4>
-                            <ul id="backgroundEquipment" class="traits-list"></ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="actions">
-                    <button id="newCharBtn" class="btn btn--primary">🎲 Nuevo Personaje</button>
-                    <button id="importJSONBtn" class="btn btn--secondary">📥 Importar JSON</button>
-                    <button id="historyBtn" class="btn btn--secondary">📚 Historial</button>
-                    <button id="shareBtn" class="btn btn--secondary">📤 Compartir</button>
-                </div>
-            </div>
+      <div class="header-right">
+        <!-- Selector de idioma -->
+        <div class="lang-switcher">
+          <label for="languageSelect" data-i18n="language.label">Idioma:</label>
+          <select id="languageSelect">
+            <option value="auto" data-i18n="language.auto">Detectar idioma</option>
+            <option value="es">Español (ES)</option>
+            <option value="ca">Valencià / Català</option>
+            <option value="eu">Euskara</option>
+            <option value="gl">Galego</option>
+            <option value="en">English</option>
+          </select>
         </div>
 
-        <div class="card bestiary-section" style="margin-top: 40px;">
-            <h2>🐉 Bestiario</h2>
-            <p>Genera criaturas aleatorias para tus encuentros</p>
-            <div class="generation-mode">
-                <button id="generateCreatureBtn" class="btn btn--primary">🎲 Criatura Aleatoria</button>
-                <button id="generateEncounterBtn" class="btn btn--secondary">⚔️ Generar Encuentro</button>
-            </div>
-            <div id="creatureSheet" class="creature-display hidden" style="margin-top: 20px;">
-                <h3 id="creatureName">-</h3>
-                <p><strong>Tipo:</strong> <span id="creatureType">-</span></p>
-                <p><strong>CR:</strong> <span id="creatureCR">-</span> | <strong>XP:</strong> <span id="creatureXP">-</span></p>
-                <p><strong>CA:</strong> <span id="creatureAC">-</span> | <strong>HP:</strong> <span id="creatureHP">-</span></p>
-                <div id="creatureDetails" style="margin-top: 15px;"></div>
-            </div>
+        <!-- Links a repos -->
+        <div class="repo-links">
+          <a href="https://github.com/JCazorla90/DnD-Character-Forge" class="github-link" target="_blank" rel="noopener">
+            ⭐ Repo principal
+          </a>
+          <a href="https://github.com/JCazorla90/dnd-nft-generator" class="github-link secondary" target="_blank" rel="noopener">
+            🧪 Versión NFT legacy
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <div class="main-content">
+      <!-- Panel de generación -->
+      <div class="card generator-panel">
+        <h2 data-i18n="generator.title">⚔️ Crear personaje</h2>
+
+        <div class="generation-mode">
+          <button id="randomBtn" class="btn btn-primary" data-i18n="generator.random">
+            🎲 Generar aleatorio
+          </button>
+          <button id="toggleCustom" class="btn btn-secondary" data-i18n="generator.customToggle">
+            ✏️ Personalizar
+          </button>
         </div>
 
-        <footer>
-            <p>⚔️ D&D Character Forge v1.0 | Creado con ❤️ por <a href="https://github.com/JCazorla90">José Cazorla</a></p>
-            <p>© 2025 José Cazorla | <a href="https://github.com/JCazorla90/DnD-Character-Forge/blob/main/LICENSE">MIT License</a></p>
-        </footer>
+        <!-- Panel custom (modo rápido, en una sola pantalla).
+             Más adelante se puede convertir en wizard multi-paso integrado con DnD-Character-Forge. -->
+        <div id="customPanel" class="custom-panel hidden">
+          <h3 data-i18n="generator.customTitle">Personalizar personaje</h3>
+
+          <div class="form-group">
+            <label for="charName" data-i18n="generator.charNameLabel">Nombre del personaje:</label>
+            <input type="text" id="charName" placeholder="Ej: Thorin Escudo de Roble">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="raceSelect" data-i18n="generator.race">Raza:</label>
+              <select id="raceSelect"></select>
+            </div>
+
+            <div class="form-group">
+              <label for="classSelect" data-i18n="generator.class">Clase:</label>
+              <select id="classSelect"></select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="backgroundSelect" data-i18n="generator.background">Trasfondo:</label>
+              <select id="backgroundSelect"></select>
+            </div>
+
+            <div class="form-group">
+              <label for="alignmentSelect" data-i18n="generator.alignment">Alineamiento:</label>
+              <select id="alignmentSelect"></select>
+            </div>
+          </div>
+
+          <button id="customGenerateBtn" class="btn btn-primary btn-full" data-i18n="generator.customButton">
+            ✨ Crear personalizado
+          </button>
+        </div>
+      </div>
+
+      <!-- Panel de ficha -->
+      <div id="characterSheet" class="card character-sheet hidden">
+        <div class="sheet-header">
+          <h2 id="charTitle" data-i18n="sheet.title">Personaje generado</h2>
+          <div class="header-buttons">
+            <button id="downloadBtn" class="btn btn-success" data-i18n="sheet.downloadPdf">
+              📥 Descargar PDF
+            </button>
+            <button id="mintNFTBtn" class="btn btn-accent" style="display:none;" data-i18n="sheet.exportNft">
+              🔗 Exportar NFT (JSON + PNG)
+            </button>
+          </div>
+        </div>
+
+        <div class="character-info">
+          <!-- Info básica -->
+          <div class="info-section">
+            <h3 data-i18n="sheet.basicInfo">📋 Información básica</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="label" data-i18n="sheet.name">Nombre:</span>
+                <span id="displayName" class="value">-</span>
+              </div>
+              <div class="info-item">
+                <span class="label" data-i18n="sheet.race">Raza:</span>
+                <span id="displayRace" class="value">-</span>
+              </div>
+              <div class="info-item">
+                <span class="label" data-i18n="sheet.class">Clase:</span>
+                <span id="displayClass" class="value">-</span>
+              </div>
+              <div class="info-item">
+                <span class="label" data-i18n="sheet.level">Nivel:</span>
+                <span id="displayLevel" class="value">1</span>
+              </div>
+              <div class="info-item">
+                <span class="label" data-i18n="sheet.background">Trasfondo:</span>
+                <span id="displayBackground" class="value">-</span>
+              </div>
+              <div class="info-item">
+                <span class="label" data-i18n="sheet.alignment">Alineamiento:</span>
+                <span id="displayAlignment" class="value">-</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="info-section">
+            <h3 data-i18n="sheet.stats">💪 Características</h3>
+            <div class="stats-grid">
+              <div class="stat-box">
+                <div class="stat-name">FUE</div>
+                <div id="statStr" class="stat-value">10</div>
+                <div id="modStr" class="stat-mod">+0</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-name">DES</div>
+                <div id="statDex" class="stat-value">10</div>
+                <div id="modDex" class="stat-mod">+0</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-name">CON</div>
+                <div id="statCon" class="stat-value">10</div>
+                <div id="modCon" class="stat-mod">+0</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-name">INT</div>
+                <div id="statInt" class="stat-value">10</div>
+                <div id="modInt" class="stat-mod">+0</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-name">SAB</div>
+                <div id="statWis" class="stat-value">10</div>
+                <div id="modWis" class="stat-mod">+0</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-name">CAR</div>
+                <div id="statCha" class="stat-value">10</div>
+                <div id="modCha" class="stat-mod">+0</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Combate -->
+          <div class="info-section">
+            <h3 data-i18n="sheet.combat">🛡️ Combate</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="label" data-i18n="sheet.hp">Puntos de golpe:</span>
+                <span id="displayHP" class="value big">10</span>
+              </div>
+              <div class="info-item">
+                <span class="label" data-i18n="sheet.ac">Clase de armadura:</span>
+                <span id="displayAC" class="value big">12</span>
+              </div>
+              <div class="info-item">
+                <span class="label" data-i18n="sheet.speed">Velocidad:</span>
+                <span id="displaySpeed" class="value">30 ft</span>
+              </div>
+              <div class="info-item">
+                <span class="label" data-i18n="sheet.init">Iniciativa:</span>
+                <span id="displayInit" class="value">+0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Salvaciones / habilidades -->
+          <div class="info-section">
+            <h3 data-i18n="sheet.defenses">🎲 Salvaciones y habilidades</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="label" data-i18n="sheet.savingThrows">Tiradas de salvación competentes:</span>
+                <span id="displaySavingThrows" class="value">-</span>
+              </div>
+              <div class="info-item full-width">
+                <span class="label" data-i18n="sheet.skills">Habilidades clave de clase:</span>
+                <span id="displaySkills" class="value">-</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Equipo -->
+          <div class="info-section">
+            <h3 data-i18n="sheet.equipment">🎒 Equipo inicial</h3>
+            <ul id="equipment" class="traits-list"></ul>
+          </div>
+
+          <!-- Trasfondo -->
+          <div class="info-section">
+            <h3>
+              💼 <span data-i18n="sheet.backgroundTitle">Trasfondo:</span>
+              <span id="backgroundName"></span>
+            </h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="label" data-i18n="sheet.backgroundSkills">Habilidades:</span>
+                <span id="backgroundSkills" class="value">-</span>
+              </div>
+              <div class="info-item">
+                <span class="label" data-i18n="sheet.backgroundFeature">Rasgo:</span>
+                <span id="backgroundFeature" class="value">-</span>
+              </div>
+            </div>
+            <h4 class="subheading" data-i18n="sheet.backgroundEquipmentTitle">
+              Equipo de trasfondo:
+            </h4>
+            <ul id="backgroundEquipment" class="traits-list"></ul>
+          </div>
+
+          <!-- Rasgos raciales -->
+          <div class="info-section">
+            <h3 data-i18n="sheet.racialTraits">🎭 Rasgos raciales</h3>
+            <ul id="racialTraits" class="traits-list"></ul>
+          </div>
+
+          <!-- Rasgos / competencias de clase -->
+          <div class="info-section">
+            <h3 data-i18n="sheet.classProficiencies">⚔️ Competencias y rasgos de clase</h3>
+            <ul id="classProficiencies" class="traits-list"></ul>
+          </div>
+
+          <div class="info-section">
+            <h3 data-i18n="sheet.classFeatures">✨ Características de clase</h3>
+            <ul id="classFeatures" class="traits-list"></ul>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="newCharBtn" class="btn btn-primary" data-i18n="sheet.newChar">
+            🔄 Nuevo personaje
+          </button>
+          <button id="shareBtn" class="btn btn-secondary" data-i18n="sheet.share">
+            📤 Compartir
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div id="historyModal" class="modal hidden">
-        <div class="modal-content">
-            <span class="close-modal">×</span>
-            <h2>📚 Historial de Personajes</h2>
-            <div id="historyList"></div>
-        </div>
-    </div>
+    <footer>
+      <p>
+        🐲 <span data-i18n="footer.brand">D&D Character Forge – Ficha D&D 5e + NFT export</span> |
+        <a href="https://github.com/JCazorla90/DnD-Character-Forge" target="_blank" rel="noopener">GitHub</a>
+      </p>
+      <p data-i18n="footer.legal">
+        Sistema de Referencia D&D 5e (SRD 5.1). No afiliado a Wizards of the Coast. Creado con ❤️ por la comunidad.
+      </p>
+    </footer>
+  </div>
 
-    <input type="file" id="fileImport" accept=".json" style="display: none;">
-
-    <button id="toggleTheme" class="theme-toggle">🌙 Modo Oscuro</button>
-
-    <script src="./js/data/dnd-data.js"></script>
-    <script src="./js/data/bestiary.js"></script>
-    <script src="./js/core/app.js"></script>
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+          integrity="sha512-Ykq9HnSgNwTaQK1QeXjdp8/fNg9s2CY5IKQkACXGxn9pUMKUr2WYyqYt6Xtdq4hZ+pjSRcSm9+L0uD0Scqf2xA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="dnd-data.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
