@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐉 Forge - D&D Character Creator</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=MedievalSharp&display=swap" rel="stylesheet">
+    
+    <!-- jsPDF para generación de PDFs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        /* Importamos los mismos estilos medievales épicos */
+        :root {
+            --parchment: #f4e9d8;
+            --parchment-dark: #e8d5b7;
+            --ink: #2a1a0f;
+            --gold: #d4af37;
+            --blood-red: #8b0000;
+            --dark-brown: #3a2517;
+            --forest-green: #2d5016;
+            --rarity-legendary: #f39c12;
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --font-title: 'MedievalSharp', 'Cinzel', serif;
+            --font-body: 'Cinzel', serif;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --shadow-epic: 0 10px 40px rgba(0, 0, 0, 0.4);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            background: linear-gradient(135deg, rgba(58, 37, 23, 0.95), rgba(26, 15, 8, 0.98)),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%233a2517" width="100" height="100"/><path d="M0 0L100 100M100 0L0 100" stroke="%232a1a0f" stroke-width="0.5" opacity="0.1"/></svg>');
+            color: var(--parchment);
+            min-height: 100vh;
+        }
+        
+        /* Mini header con volver atrás */
+        .mini-header {
+            background: rgba(244, 233, 216, 0.95);
+            border-bottom: 3px solid var(--gold);
+            padding: var(--space-md) var(--space-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+        
+        .back-link {
+            color: var(--ink);
+            text-decoration: none;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+        
+        .back-link:hover {
+            color: var(--blood-red);
+        }
+        
+        .mode-indicator {
+            color: var(--blood-red);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        /* Contenedor principal */
+        .forge-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--space-lg);
+        }
+        
+        /* Loader épico mientras carga */
+        .loader {
+            text-align: center;
+            padding: var(--space-xl);
+        }
+        
+        .loader-spinner {
+            border: 4px solid var(--parchment-dark);
+            border-top: 4px solid var(--gold);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto var(--space-md);
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Panel de control superior */
+        .control-panel {
+            background: rgba(244, 233, 216, 0.95);
+            border: 3px solid var(--ink);
+            border-radius: 12px;
+            padding: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .control-title {
+            font-family: var(--font-title);
+            font-size: 1.5rem;
+            color: var(--blood-red);
+            margin-bottom: var(--space-md);
+            text-align: center;
+        }
+        
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-md);
+        }
+        
+        .control-btn {
+            padding: var(--space-md);
+            border: 2px solid var(--ink);
+            border-radius: 8px;
+            background: var(--parchment);
+            color: var(--ink);
+            font-family: var(--font-body);
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+        
+        .control-btn:hover {
+            background: var(--gold);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px var(--shadow);
+        }
+        
+        .control-btn.primary {
+            background: linear-gradient(135deg, var(--blood-red), #a00000);
+            color: var(--gold);
+            border-color: var(--gold);
+        }
+        
+        /* Ficha de personaje (misma estética del original) */
+        .character-sheet {
+            background: var(--parchment);
+            border: 5px double var(--ink);
+            border-radius: 12px;
+            padding: var(--space-xl);
+            margin: var(--space-xl) 0;
+            box-shadow: var(--shadow-epic);
+            position: relative;
+            display: none;
+        }
+        
+        .character-sheet.active {
+            display: block;
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .character-sheet::before,
+        .character-sheet::after {
+            position: absolute;
+            font-size: 4rem;
+            opacity: 0.15;
+            color: var(--ink);
+        }
+        
+        .character-sheet::before {
+            content: '🐉';
+            top: 10px;
+            left: 10px;
+        }
+        
+        .character-sheet::after {
+            content: '💀';
+            bottom: 10px;
+            right: 10px;
+        }
+        
+        .sheet-header {
+            text-align: center;
+            border-bottom: 3px solid var(--ink);
+            padding-bottom: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .char-name {
+            font-family: var(--font-title);
+            font-size: 2.5rem;
+            color: var(--blood-red);
+            margin-bottom: var(--space-sm);
+        }
+        
+        .char-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .info-box {
+            background: rgba(232, 213, 183, 0.5);
+            border: 2px solid var(--ink);
+            border-radius: 8px;
+            padding: var(--space-md);
+            text-align: center;
+        }
+        
+        .info-label {
+            font-size: 0.85rem;
+            color: var(--ink);
+            opacity: 0.7;
+            text-transform: uppercase;
+        }
+        
+        .info-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--blood-red);
+            margin-top: var(--space-xs);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: var(--space-md);
+            margin: var(--space-lg) 0;
+        }
+        
+        .stat-box {
+            background: rgba(232, 213, 183, 0.5);
+            border: 3px solid var(--ink);
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            transition: var(--transition);
+        }
+        
+        .stat-box:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--gold);
+        }
+        
+        .stat-name {
+            font-size: 0.75rem;
+            color: var(--ink);
+            text-transform: uppercase;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--blood-red);
+        }
+        
+        .stat-modifier {
+            font-size: 1rem;
+            color: var(--forest-green);
+        }
+        
+        .section-title {
+            font-family: var(--font-title);
+            font-size: 1.5rem;
+            color: var(--blood-red);
+            margin: var(--space-lg) 0 var(--space-md);
+            text-align: center;
+            border-bottom: 2px solid var(--ink);
+            padding-bottom: var(--space-sm);
+        }
+        
+        .abilities-section {
+            background: rgba(232, 213, 183, 0.3);
+            border: 2px solid var(--ink);
+            border-radius: 8px;
+            padding: var(--space-md);
+            margin: var(--space-md) 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .ability-item {
+            margin-bottom: var(--space-sm);
+            padding: var(--space-sm);
+            background: rgba(244, 233, 216, 0.7);
+            border-left: 3px solid var(--gold);
+            border-radius: 4px;
+        }
+        
+        .ability-name {
+            font-weight: bold;
+            color: var(--blood-red);
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--space-md);
+            margin-top: var(--space-xl);
+        }
+        
+        .btn-action {
+            padding: var(--space-md);
+            border: 2px solid var(--ink);
+            border-radius: 8px;
+            background: var(--parchment-dark);
+            color: var(--ink);
+            font-family: var(--font-body);
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .btn-action:hover {
+            background: var(--gold);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px var(--shadow);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .control-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mini header con navegación -->
+    <div class="mini-header">
+        <a href="index.html" class="back-link">← Volver al inicio</a>
+        <div class="mode-indicator" id="modeIndicator">⚔️ D&D Character Forge</div>
+    </div>
+
+    <div class="forge-container">
+        <!-- Loader inicial -->
+        <div id="loader" class="loader">
+            <div class="loader-spinner"></div>
+            <p>Cargando el poder de los antiguos...</p>
+        </div>
+
+        <!-- Panel de control -->
+        <div id="controlPanel" class="control-panel" style="display: none;">
+            <h2 class="control-title" id="controlTitle">🎲 Generador de Personajes</h2>
+            <div class="control-grid">
+                <button class="control-btn primary" onclick="generateCharacter()">
+                    ⚡ Generar Personaje
+                </button>
+                <button class="control-btn" onclick="generateBestiary()">
+                    🐉 Generar Criatura
+                </button>
+                <button class="control-btn" onclick="generateEncounter()">
+                    ⚔️ Generar Encuentro
+                </button>
+                <button class="control-btn" onclick="showMultiverse()">
+                    🌌 Portal Multiverso
+                </button>
+            </div>
+        </div>
+
+        <!-- Ficha de personaje -->
+        <div id="characterSheet" class="character-sheet">
+            <div class="sheet-header">
+                <h2 class="char-name" id="charName">Personaje</h2>
+                <div class="char-info">
+                    <div class="info-box">
+                        <div class="info-label">Raza</div>
+                        <div class="info-value" id="charRace">-</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-label">Clase</div>
+                        <div class="info-value" id="charClass">-</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-label">Nivel</div>
+                        <div class="info-value" id="charLevel">1</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-label">HP</div>
+                        <div class="info-value" id="charHP">0</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-label">AC</div>
+                        <div class="info-value" id="charAC">10</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">⚡ CARACTERÍSTICAS</div>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-name">FUE</div>
+                    <div class="stat-value" id="statStr">10</div>
+                    <div class="stat-modifier" id="modStr">+0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-name">DES</div>
+                    <div class="stat-value" id="statDex">10</div>
+                    <div class="stat-modifier" id="modDex">+0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-name">CON</div>
+                    <div class="stat-value" id="statCon">10</div>
+                    <div class="stat-modifier" id="modCon">+0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-name">INT</div>
+                    <div class="stat-value" id="statInt">10</div>
+                    <div class="stat-modifier" id="modInt">+0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-name">SAB</div>
+                    <div class="stat-value" id="statWis">10</div>
+                    <div class="stat-modifier" id="modWis">+0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-name">CAR</div>
+                    <div class="stat-value" id="statCha">10</div>
+                    <div class="stat-modifier" id="modCha">+0</div>
+                </div>
+            </div>
+
+            <div class="abilities-section">
+                <div class="section-title">🐉 RASGOS RACIALES</div>
+                <div id="racialTraits"></div>
+            </div>
+
+            <div class="abilities-section">
+                <div class="section-title">⚔️ CARACTERÍSTICAS DE CLASE</div>
+                <div id="classFeatures"></div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-action" onclick="exportPDF()">📄 PDF</button>
+                <button class="btn-action" onclick="exportJSON()">💾 JSON</button>
+                <button class="btn-action" onclick="mintNFT()">🎨 NFT</button>
+                <button class="btn-action" onclick="levelUp()">⬆️ Nivel</button>
+                <button class="btn-action" onclick="resetForge()">🆕 Nuevo</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════
+        // 🎲 FORGE SYSTEM - Core del generador
+        // ═══════════════════════════════════════════════════════════
+        
+        console.log('🔥 Forge System inicializando...');
+        
+        // Datos base de D&D (esta será la estructura que expandiremos en archivos externos)
+        const DND_DATA = {
+            races: {
+                'Humano': { speed: 30, traits: ['+1 a todas las características', 'Dote adicional'] },
+                'Elfo': { speed: 30, traits: ['Visión oscuridad 60ft', 'Ventaja vs encantamiento'] },
+                'Enano': { speed: 25, traits: ['Visión oscuridad 60ft', 'Resistencia a veneno'] },
+                'Mediano': { speed: 25, traits: ['Afortunado', 'Valiente'] },
+                'Orco': { speed: 30, traits: ['+2 FUE +1 CON', 'Agresivo'] },
+                'Tiefling': { speed: 30, traits: ['+2 CAR +1 INT', 'Resistencia al fuego'] }
+            },
+            classes: {
+                'Guerrero': { hitDie: 10, features: ['Segundo aliento', 'Oleada de acción', 'Ataque extra'] },
+                'Mago': { hitDie: 6, features: ['Lanzamiento de conjuros', 'Recuperación arcana'] },
+                'Pícaro': { hitDie: 8, features: ['Ataque furtivo', 'Acción astuta', 'Esquiva asombrosa'] },
+                'Clérigo': { hitDie: 8, features: ['Lanzamiento de conjuros', 'Canalizar divinidad'] },
+                'Bárbaro': { hitDie: 12, features: ['Furia', 'Defensa sin armadura', 'Ataque temerario'] },
+                'Paladín': { hitDie: 10, features: ['Imposición de manos', 'Golpe divino'] }
+            },
+            names: {
+                'Humano': ['Thorin', 'Aria', 'Marcus', 'Elena', 'Roland'],
+                'Elfo': ['Legolas', 'Galadriel', 'Elrond', 'Arwen'],
+                'Enano': ['Gimli', 'Balin', 'Dwalin', 'Thorin'],
+                'Mediano': ['Bilbo', 'Frodo', 'Samwise', 'Pippin'],
+                'Orco': ['Grunk', 'Thrak', 'Urgak', 'Mog'],
+                'Tiefling': ['Akta', 'Damakos', 'Kairon', 'Lerissa']
+            }
+        };
+        
+        // Utilidades
+        function rand(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+        
+        function rollDice(sides) {
+            return Math.floor(Math.random() * sides) + 1;
+        }
+        
+        function roll4d6() {
+            const rolls = [rollDice(6), rollDice(6), rollDice(6), rollDice(6)];
+            rolls.sort((a, b) => a - b);
+            return rolls.slice(1).reduce((a, b) => a + b, 0);
+        }
+        
+        function calcMod(stat) {
+            return Math.floor((stat - 10) / 2);
+        }
+        
+        // Estado global
+        let currentMode = 'random';
+        let currentEdition = '5e';
+        let currentCharacter = null;
+        
+        // Inicialización
+        window.addEventListener('DOMContentLoaded', () => {
+            // Obtener parámetros de URL
+            const params = new URLSearchParams(window.location.search);
+            currentMode = params.get('mode') || sessionStorage.getItem('launch_mode') || 'random';
+            currentEdition = params.get('edition') || sessionStorage.getItem('launch_edition') || '5e';
+            
+            // Actualizar UI según modo
+            document.getElementById('modeIndicator').textContent = getModeTitle(currentMode);
+            document.getElementById('controlTitle').textContent = getModeTitle(currentMode);
+            
+            // Ocultar loader y mostrar panel
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('controlPanel').style.display = 'block';
+                
+                // Si es modo random o chaos, generar automáticamente
+                if (currentMode === 'random' || currentMode === 'chaos') {
+                    generateCharacter();
+                }
+            }, 1000);
+            
+            console.log(`✅ Forge cargado en modo: ${currentMode} | edición: ${currentEdition}`);
+        });
+        
+        function getModeTitle(mode) {
+            const titles = {
+                'wizard': '🧙 Modo Wizard - Paso a Paso',
+                'random': '🎲 Modo Random - Generación Rápida',
+                'chaos': '🌀 Modo CHAOS - ¡Locura Total!',
+                'multiverse': '🌌 Modo Multiverso - Crossovers'
+            };
+            return titles[mode] || '⚔️ D&D Character Forge';
+        }
+        
+        // Generador principal
+        function generateCharacter() {
+            console.log(`🎲 Generando personaje en modo: ${currentMode}`);
+            
+            const race = rand(Object.keys(DND_DATA.races));
+            const charClass = rand(Object.keys(DND_DATA.classes));
+            const name = rand(DND_DATA.names[race] || DND_DATA.names['Humano']);
+            
+            let stats;
+            if (currentMode === 'chaos') {
+                // Modo CHAOS: 3d6 puro (puede salir 3-18)
+                stats = {
+                    strength: rollDice(6) + rollDice(6) + rollDice(6),
+                    dexterity: rollDice(6) + rollDice(6) + rollDice(6),
+                    constitution: rollDice(6) + rollDice(6) + rollDice(6),
+                    intelligence: rollDice(6) + rollDice(6) + rollDice(6),
+                    wisdom: rollDice(6) + rollDice(6) + rollDice(6),
+                    charisma: rollDice(6) + rollDice(6) + rollDice(6)
+                };
+            } else {
+                // Modo normal: 4d6 drop lowest
+                stats = {
+                    strength: roll4d6(),
+                    dexterity: roll4d6(),
+                    constitution: roll4d6(),
+                    intelligence: roll4d6(),
+                    wisdom: roll4d6(),
+                    charisma: roll4d6()
+                };
+            }
+            
+            const hp = DND_DATA.classes[charClass].hitDie + calcMod(stats.constitution);
+            const ac = 10 + calcMod(stats.dexterity);
+            
+            currentCharacter = {
+                name: currentMode === 'chaos' ? `CHAOS ${rollDice(9999)}` : name,
+                race,
+                class: charClass,
+                level: currentMode === 'chaos' ? rollDice(10) : 1,
+                stats,
+                hp: Math.max(1, hp),
+                ac
+            };
+            
+            displayCharacter(currentCharacter);
+        }
+        
+        function displayCharacter(char) {
+            document.getElementById('charName').textContent = char.name;
+            document.getElementById('charRace').textContent = char.race;
+            document.getElementById('charClass').textContent = char.class;
+            document.getElementById('charLevel').textContent = char.level;
+            document.getElementById('charHP').textContent = char.hp;
+            document.getElementById('charAC').textContent = char.ac;
+            
+            // Stats
+            const statNames = ['Str', 'Dex', 'Con', 'Int', 'Wis', 'Cha'];
+            const statKeys = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
+            
+            statKeys.forEach((key, i) => {
+                const value = char.stats[key];
+                const mod = calcMod(value);
+                document.getElementById(`stat${statNames[i]}`).textContent = value;
+                document.getElementById(`mod${statNames[i]}`).textContent = (mod >= 0 ? '+' : '') + mod;
+            });
+            
+            // Rasgos
+            const traits = DND_DATA.races[char.race].traits;
+            document.getElementById('racialTraits').innerHTML = traits.map(t => 
+                `<div class="ability-item"><span class="ability-name">${t}</span></div>`
+            ).join('');
+            
+            // Features
+            const features = DND_DATA.classes[char.class].features;
+            document.getElementById('classFeatures').innerHTML = features.map(f => 
+                `<div class="ability-item"><span class="ability-name">${f}</span></div>`
+            ).join('');
+            
+            document.getElementById('characterSheet').classList.add('active');
+            document.getElementById('characterSheet').scrollIntoView({ behavior: 'smooth' });
+            
+            console.log('✅ Personaje mostrado:', char.name);
+        }
+        
+        // Funciones de exportación
+        function exportPDF() {
+            if (!currentCharacter) return alert('⚠️ Genera un personaje primero');
+            
+            alert('📄 Generación de PDF próximamente...\nFuncionalidad completa en desarrollo');
+            console.log('📄 Exportando a PDF:', currentCharacter);
+        }
+        
+        function exportJSON() {
+            if (!currentCharacter) return alert('⚠️ Genera un personaje primero');
+            
+            const json = JSON.stringify(currentCharacter, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentCharacter.name.replace(/\s/g, '_')}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            console.log('💾 JSON exportado');
+        }
+        
+        function mintNFT() {
+            if (!currentCharacter) return alert('⚠️ Genera un personaje primero');
+            
+            alert('🎨 Sistema NFT próximamente...\nConectaremos con MetaMask para mintear tu personaje');
+            console.log('🎨 Minteando NFT:', currentCharacter);
+        }
+        
+        function levelUp() {
+            if (!currentCharacter) return alert('⚠️ Genera un personaje primero');
+            
+            currentCharacter.level++;
+            document.getElementById('charLevel').textContent = currentCharacter.level;
+            alert(`⬆️ ¡Nivel ${currentCharacter.level}!`);
+        }
+        
+        function resetForge() {
+            if (confirm('🆕 ¿Crear nuevo personaje?')) {
+                document.getElementById('characterSheet').classList.remove('active');
+                currentCharacter = null;
+            }
+        }
+        
+        // Funciones adicionales (próximamente)
+        function generateBestiary() {
+            alert('🐉 Generador de Bestiario próximamente...');
+        }
+        
+        function generateEncounter() {
+            alert('⚔️ Generador de Encuentros próximamente...');
+        }
+        
+        function showMultiverse() {
+            alert('🌌 Portal Multiverso próximamente...\nMagic, Elden Ring, Stranger Things');
+        }
+        
+        console.log('✅ Forge System cargado completamente');
+    </script>
+</body>
+</html>
